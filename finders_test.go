@@ -7,6 +7,8 @@ import (
 
 func TestDbAll(t *testing.T) {
 
+	_ = Connect(ConnectOptions{URL: "mongodb://localhost:27017", DbName: "foo"})
+
 	db := DB()
 	foo := make([]testhelper.Foo, 0)
 	err := db.All(&foo)
