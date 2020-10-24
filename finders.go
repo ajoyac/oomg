@@ -1,9 +1,7 @@
 package oomg
 
-import log "github.com/sirupsen/logrus"
-
-func (c *Db) All(models interface{}) error {
-	return Q(c).All(models)
+func (d *Db) All(models interface{}) error {
+	return Q(d).All(models)
 }
 func (q *Query) All(models interface{}) (err error) {
 
@@ -21,6 +19,26 @@ func (q *Query) All(models interface{}) (err error) {
 	err = cursor.All(ctx, models)
 	if err != nil {
 		log.Error("Failed to map query results and model")
+		return
+	}
+	return
+}
+func (d *Db) One(model interface{}) error {
+	return Q(d).One(model)
+}
+func (q *Query) One(model interface{}) (err error) {
+
+	opts := q.getFindOneOpts()
+	filter := q.getFilter()
+	collection := q.database.Collection(model)
+	ctx, cancel := newCtx()
+	defer cancel()
+
+	cursor := collection.FindOne(ctx, filter, opts)
+
+	err = cursor.Decode(model)
+	if err != nil {
+		log.Error("Failed during Decode")
 		return
 	}
 	return
