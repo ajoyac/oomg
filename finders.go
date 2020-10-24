@@ -7,7 +7,8 @@ func (q *Query) All(models interface{}) (err error) {
 
 	opts := q.getFindOpts()
 	filter := q.getFilter()
-	collection := q.database.Collection(models)
+	collection := q.getCollection(models)
+
 	ctx, cancel := newCtx()
 	defer cancel()
 
@@ -30,7 +31,8 @@ func (q *Query) One(model interface{}) (err error) {
 
 	opts := q.getFindOneOpts()
 	filter := q.getFilter()
-	collection := q.database.Collection(model)
+	collection := q.getCollection(model)
+
 	ctx, cancel := newCtx()
 	defer cancel()
 

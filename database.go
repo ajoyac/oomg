@@ -6,6 +6,7 @@ type Db struct {
 	database *mongo.Database
 }
 
+// Return Current Database instance
 func DB() *Db {
 	return &Db{database: currentDB}
 }
