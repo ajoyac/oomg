@@ -9,10 +9,9 @@ func TestDbCreate(t *testing.T) {
 
 	_ = Connect(ConnectOptions{URL: "mongodb://localhost:27017", DbName: "foo"})
 
-	t.Run("Save One ", func(t *testing.T) {
-		db := DB()
+	t.Run("Create One ", func(t *testing.T) {
 		foo := testhelper.Foo{}
-		err := db.Create(&foo)
+		err := Create(&foo)
 		if err != nil {
 			t.Error(err)
 			return

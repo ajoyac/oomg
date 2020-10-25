@@ -4,12 +4,20 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func (d *Db) Create(models interface{}) error {
-	return C(d).Create(models)
+//Create a model into the DB
+//if you are looking to save a none struct
+//create a Scribe  calling with the S() function the name of collection
+func Create(model interface{}) error {
+	return S(model).Create(model)
 }
-func (c *Creator) Create(model interface{}) (err error) {
 
-	collection := c.database.Collection(model)
+func (s *Scribe) Create(model interface{}) (err error) {
+
+	if s.collection == nil {
+		s.collection = collection(model)
+	}
+
+	collection := s.collection
 	ctx, cancel := newCtx()
 	log.WithField("Collection", collection.Name()).Debug("Creating Document")
 	defer cancel()
@@ -28,7 +36,7 @@ func (c *Creator) Create(model interface{}) (err error) {
 
 	log.Debug("Insert Result", insertResult)
 
-	err = c.database.Filter(M{"_id": id}).One(model)
+	err = Q(s.collection.Name()).Filter(M{"_id": id}).One(model)
 	if err != nil {
 		log.Error("Failed to Retrive object created")
 		log.Error(err)

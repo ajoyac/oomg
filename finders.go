@@ -1,18 +1,21 @@
 package oomg
 
-func (d *Db) All(models interface{}) error {
-	return Q(d).All(models)
+func All(models interface{}) error {
+	return Q(models).All(models)
 }
 func (q *Query) All(models interface{}) (err error) {
 
 	opts := q.getFindOpts()
 	filter := q.getFilter()
-	collection := q.getCollection(models)
+
+	if q.collection == nil {
+		q.collection = collection(models)
+	}
 
 	ctx, cancel := newCtx()
 	defer cancel()
 
-	cursor, err := collection.Find(ctx, filter, opts)
+	cursor, err := q.collection.Find(ctx, filter, opts)
 	if err != nil {
 		log.Error("Failed to Find model")
 		return
@@ -24,14 +27,14 @@ func (q *Query) All(models interface{}) (err error) {
 	}
 	return
 }
-func (d *Db) One(model interface{}) error {
-	return Q(d).One(model)
+func One(model interface{}) error {
+	return Q(model).One(model)
 }
 func (q *Query) One(model interface{}) (err error) {
 
 	opts := q.getFindOneOpts()
 	filter := q.getFilter()
-	collection := q.getCollection(model)
+	collection := q.collection
 
 	ctx, cancel := newCtx()
 	defer cancel()

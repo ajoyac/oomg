@@ -67,3 +67,14 @@ func Connect(co ConnectOptions) (err error) {
 	return
 
 }
+
+func database() *mongo.Database {
+	return currentDB
+}
+func collection(model interface{}) *mongo.Collection {
+	if model == nil {
+		return nil
+	}
+	name := getCollectionName(model)
+	return database().Collection(name)
+}
